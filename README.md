@@ -1,108 +1,100 @@
-# MultiCursor
+# MultiCursor Library
 
-Real-time multi-user cursor visibility for any web project. Users visiting the same page see each other's cursors live.
+A lightweight, drop-in npm library that adds real-time multi-user cursor visibility to any web project. Users visiting the same page can see each other's cursors live.
+
+## Features
+
+- **Single `npm install`** — Add the feature to any project
+- **Zero configuration** — Works out of the box in development
+- **Minimal footprint** — No heavy dependencies
+- **Framework agnostic** — Works with vanilla JS, React, Vue, or any frontend
+- **One server, many projects** — A single hosted WebSocket server can serve multiple projects via rooms
 
 ## Quick Start
 
-### 1. Start the dev server
+### 1. Install
 
 ```bash
-npx multicursor-server --port 3001
+npm install @multicursor/client
 ```
 
-Or add it to your `package.json`:
+### 2. Start the cursor server (for local development)
+
+In your project, add the server as a dev dependency and a script:
 
 ```json
 {
+  "devDependencies": {
+    "@multicursor/server": "^0.1.0"
+  },
   "scripts": {
     "cursors": "multicursor-server --port 3001"
   }
 }
 ```
 
-### 2. Add the client to your page
+Then run `npm run cursors` to start the WebSocket server on `ws://localhost:3001`.
+
+### 3. Add to your app
 
 ```js
 import { initCursors } from '@multicursor/client'
 
-const destroy = initCursors({
-  serverUrl: 'ws://localhost:3001',
-  room: 'my-project',
-})
-
-// Call destroy() to clean up (e.g. on unmount in React/Vue)
-```
-
-That's it. Open the page in two browser windows and move your mouse.
-
-## Client Options
-
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `serverUrl` | `string` | `'ws://localhost:3001'` | WebSocket server URL |
-| `room` | `string` | `'default'` | Room namespace (multiple projects can share one server) |
-| `throttleMs` | `number` | `40` | Min ms between outgoing cursor updates (~25/sec) |
-| `cursorColor` | `string` | auto-assigned | Force a specific cursor color |
-
-## Server Options
-
-### CLI
-
-```bash
-multicursor-server --port 3001 --origins "https://mysite.com,http://localhost:5173"
-```
-
-| Flag | Default | Description |
-|---|---|---|
-| `--port`, `-p` | `3001` | Port to listen on |
-| `--origins`, `-o` | allow all | Comma-separated allowed origins |
-
-### Programmatic
-
-```js
-import { createMultiCursorServer } from '@multicursor/server'
-
-const server = createMultiCursorServer({
-  port: 3001,
-  allowedOrigins: ['https://mysite.com'],
-})
-
-await server.start()
-```
-
-## Production
-
-Deploy the server as a plain Node.js process (Railway, Fly.io, Render, Docker, etc.) and point clients at it:
-
-```js
-initCursors({
+const destroyCursors = initCursors({
   serverUrl: process.env.CURSOR_SERVER_URL || 'ws://localhost:3001',
   room: 'my-project',
+  throttleMs: 40,
+  cursorColor: '#e74c3c', // optional
 })
+
+// When navigating away or unmounting (e.g. React useEffect cleanup):
+destroyCursors()
 ```
 
-One server instance handles many projects simultaneously via rooms.
+## Package Structure
 
-## How It Works
+```
+multicursor/
+├── packages/
+│   ├── client/     # @multicursor/client — browser library
+│   └── server/     # @multicursor/server — WebSocket server
+├── README.md
+└── package.json
+```
 
-- Cursor positions are normalized to percentages so different screen sizes work
-- The client throttles outgoing messages and pauses when the tab is backgrounded
-- The server enforces per-socket rate limits and disconnects abusive clients
-- Ghost connections are detected via a 15-second heartbeat/ping cycle
-- Idle remote cursors fade out after 10 seconds and hide after 30 seconds
-- The client auto-reconnects with exponential backoff on connection loss
+## Production Deployment
+
+1. Deploy the server to Railway, Render, Fly.io, or any Node.js host
+2. Set `CURSOR_SERVER_URL=wss://your-server.example.com` in your app's environment
+3. Configure `MULTICURSOR_ALLOWED_ORIGINS` on the server (comma-separated list of allowed origins)
+
+## API
+
+### `initCursors(options)`
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `serverUrl` | string | `ws://localhost:3001` | WebSocket server URL |
+| `room` | string | required | Room/namespace (multiple projects share one server) |
+| `throttleMs` | number | 40 | Throttle outgoing updates (~25/sec) |
+| `cursorColor` | string | auto | Optional cursor color (otherwise server-assigned) |
+
+Returns a cleanup function. Call it when unmounting to close the connection and remove cursor elements.
 
 ## Development
 
 ```bash
 npm install
 npm run build
-npm run dev:server
+npm run cursors   # Start WebSocket server on port 3001
 ```
 
-## Packages
+### Demo
 
-| Package | Description |
-|---|---|
-| `@multicursor/client` | Browser-side library (zero runtime dependencies) |
-| `@multicursor/server` | WebSocket server + CLI dev server |
+1. Run `npm run cursors` in one terminal
+2. Serve the examples folder (e.g. `npx serve examples -p 5173`)
+3. Open http://localhost:5173/demo.html in multiple tabs to see cursors
+
+## License
+
+MIT

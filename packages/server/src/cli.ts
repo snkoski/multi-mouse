@@ -1,18 +1,26 @@
-import { parseArgs } from 'node:util'
-import { createMultiCursorServer } from './server.js'
+#!/usr/bin/env node
+/**
+ * CLI entrypoint for multicursor-server
+ */
+
+import { parseArgs } from "util";
+import { createCursorServer } from "./index.js";
 
 const { values } = parseArgs({
   options: {
-    port: { type: 'string', short: 'p', default: '3001' },
-    origins: { type: 'string', short: 'o' },
+    port: {
+      type: "string",
+      short: "p",
+      default: "3001",
+    },
   },
-  strict: false,
-})
+  allowPositionals: true,
+});
 
-const port = parseInt(values.port as string, 10)
-const allowedOrigins = values.origins
-  ? (values.origins as string).split(',').map((s) => s.trim())
-  : undefined
+const port = parseInt(values.port || "3001", 10);
+if (isNaN(port) || port < 1 || port > 65535) {
+  console.error("Invalid port. Use --port or -p with a number between 1 and 65535.");
+  process.exit(1);
+}
 
-const server = createMultiCursorServer({ port, allowedOrigins })
-server.start()
+createCursorServer(port);
