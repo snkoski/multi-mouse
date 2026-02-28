@@ -1,16 +1,13 @@
 {
   "name": "multicursor",
   "private": true,
-  "description": "Real-time multi-user cursor visibility for any web project",
-  "workspaces": ["packages/*"],
+  "version": "0.1.0",
+  "description": "Drop-in real-time multi-user cursor library",
+  "packageManager": "pnpm@10.8.1",
   "scripts": {
-    "build": "npm run build --workspace=@multicursor/client && npm run build --workspace=@multicursor/server",
-    "dev": "npm run build --workspace=@multicursor/client -- --watch",
-    "cursors": "node packages/server/dist/cli.js --port 3001"
-  },
-  "keywords": ["cursor", "collaboration", "websocket", "realtime"],
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0"
+    "build": "pnpm -r build",
+    "cursors": "multicursor-server --port 3001",
+    "dev:server": "pnpm --filter @multicursor/server dev",
+    "clean": "pnpm -r clean"
   }
 }

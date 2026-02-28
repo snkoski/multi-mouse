@@ -1,25 +1,27 @@
 {
   "name": "@multicursor/client",
   "version": "0.1.0",
-  "description": "Real-time multi-user cursor visibility for any web project",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "description": "Browser client for real-time shared cursors",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean"
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "clean": "rm -rf dist"
   },
   "devDependencies": {
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0"
-  },
-  "keywords": ["cursor", "collaboration", "websocket", "realtime"],
-  "license": "MIT"
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
+  }
 }
