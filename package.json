@@ -1,0 +1,11 @@
+{
+  "name": "multicursor",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev:server": "npm run dev --workspace=packages/server"
+  }
+}
