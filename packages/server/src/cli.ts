@@ -1,5 +1,5 @@
 import { parseArgs } from 'node:util'
-import { createMultiCursorServer } from './server.js'
+import { createMultiMouseServer } from './server.js'
 
 const { values } = parseArgs({
   options: {
@@ -14,5 +14,5 @@ const allowedOrigins = values.origins
   ? (values.origins as string).split(',').map((s) => s.trim())
   : undefined
 
-const server = createMultiCursorServer({ port, allowedOrigins })
+const server = createMultiMouseServer({ port, allowedOrigins })
 server.start()

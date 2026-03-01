@@ -1,11 +1,13 @@
 {
-  "name": "multicursor",
+  "name": "multi-mouse",
   "private": true,
+  "repository": "github:snkoski/multi-mouse",
+  "packageManager": "pnpm@9.15.0",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
-    "dev:server": "npm run dev --workspace=packages/server"
+    "build": "pnpm -r run build",
+    "dev:server": "pnpm --filter @multi-mouse/server dev"
   }
 }

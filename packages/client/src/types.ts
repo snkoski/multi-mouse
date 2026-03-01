@@ -3,6 +3,11 @@ export interface CursorOptions {
   room?: string
   throttleMs?: number
   cursorColor?: string
+  onConnect?: () => void
+  onDisconnect?: (code?: number, reason?: string) => void
+  onError?: (err: Event) => void
+  onUserJoin?: () => void
+  onUserLeave?: () => void
 }
 
 export interface RemoteCursor {

@@ -1,4 +1,4 @@
-# MultiCursor
+# MultiMouse
 
 Real-time multi-user cursor visibility for any web project. Users visiting the same page see each other's cursors live.
 
@@ -7,7 +7,7 @@ Real-time multi-user cursor visibility for any web project. Users visiting the s
 ### 1. Start the dev server
 
 ```bash
-npx multicursor-server --port 3001
+npx multi-mouse-server --port 3001
 ```
 
 Or add it to your `package.json`:
@@ -15,7 +15,7 @@ Or add it to your `package.json`:
 ```json
 {
   "scripts": {
-    "cursors": "multicursor-server --port 3001"
+    "cursors": "multi-mouse-server --port 3001"
   }
 }
 ```
@@ -23,7 +23,7 @@ Or add it to your `package.json`:
 ### 2. Add the client to your page
 
 ```js
-import { initCursors } from '@multicursor/client'
+import { initCursors } from '@multi-mouse/client'
 
 const destroy = initCursors({
   serverUrl: 'ws://localhost:3001',
@@ -49,7 +49,7 @@ That's it. Open the page in two browser windows and move your mouse.
 ### CLI
 
 ```bash
-multicursor-server --port 3001 --origins "https://mysite.com,http://localhost:5173"
+multi-mouse-server --port 3001 --origins "https://mysite.com,http://localhost:5173"
 ```
 
 | Flag | Default | Description |
@@ -60,9 +60,9 @@ multicursor-server --port 3001 --origins "https://mysite.com,http://localhost:51
 ### Programmatic
 
 ```js
-import { createMultiCursorServer } from '@multicursor/server'
+import { createMultiMouseServer } from '@multi-mouse/server'
 
-const server = createMultiCursorServer({
+const server = createMultiMouseServer({
   port: 3001,
   allowedOrigins: ['https://mysite.com'],
 })
@@ -104,5 +104,5 @@ npm run dev:server
 
 | Package | Description |
 |---|---|
-| `@multicursor/client` | Browser-side library (zero runtime dependencies) |
-| `@multicursor/server` | WebSocket server + CLI dev server |
+| `@multi-mouse/client` | Browser-side library (zero runtime dependencies) |
+| `@multi-mouse/server` | WebSocket server + CLI dev server |

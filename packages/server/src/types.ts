@@ -16,7 +16,7 @@ export interface SocketMeta {
   messageCount: number
 }
 
-export type MultiCursorSocket = WebSocket & { meta: SocketMeta }
+export type MultiMouseSocket = WebSocket & { meta: SocketMeta }
 
 export interface CursorMoveMessage {
   type: 'cursor-move'

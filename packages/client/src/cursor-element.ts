@@ -2,9 +2,12 @@ const CURSOR_SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" 
   <path d="M1 1L6 14L8 8L14 6L1 1Z" fill="currentColor" stroke="white" stroke-width="1" stroke-linejoin="round"/>
 </svg>`
 
+const DEFAULT_CURSOR_COLOR = '#3498db'
+
 export function createCursorElement(color: string, userId: string): HTMLDivElement {
+  const effectiveColor = color || DEFAULT_CURSOR_COLOR
   const el = document.createElement('div')
-  el.className = 'multicursor-remote'
+  el.className = 'multi-mouse-remote'
   el.setAttribute('data-user-id', userId)
 
   el.style.cssText = `
@@ -16,7 +19,7 @@ export function createCursorElement(color: string, userId: string): HTMLDivEleme
     will-change: transform;
     transition: transform 60ms ease-out, opacity 300ms ease;
     transform: translate(-100px, -100px);
-    color: ${color};
+    color: ${effectiveColor};
   `
 
   const svgContainer = document.createElement('div')
@@ -29,7 +32,7 @@ export function createCursorElement(color: string, userId: string): HTMLDivEleme
     position: absolute;
     top: 16px;
     left: 10px;
-    background: ${color};
+    background: ${effectiveColor};
     color: white;
     font-size: 10px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

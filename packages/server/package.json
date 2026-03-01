@@ -1,5 +1,5 @@
 {
-  "name": "@multicursor/server",
+  "name": "@multi-mouse/server",
   "version": "0.1.0",
   "description": "WebSocket server for real-time multi-user cursor sharing",
   "type": "module",
@@ -7,7 +7,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "multicursor-server": "./dist/cli.js"
+    "multi-mouse-server": "./dist/cli.js"
   },
   "exports": {
     ".": {

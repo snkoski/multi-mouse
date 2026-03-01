@@ -1,5 +1,5 @@
 {
-  "name": "@multicursor/client",
+  "name": "@multi-mouse/client",
   "version": "0.1.0",
   "description": "Drop-in multi-user cursor visibility for any web project",
   "type": "module",

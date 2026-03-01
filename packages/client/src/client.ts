@@ -10,6 +10,11 @@ export function initCursors(options: CursorOptions = {}): () => void {
     serverUrl = 'ws://localhost:3001',
     room = 'default',
     throttleMs = 40,
+    onConnect,
+    onDisconnect,
+    onError,
+    onUserJoin,
+    onUserLeave,
   } = options
 
   let destroyed = false
@@ -116,10 +121,12 @@ export function initCursors(options: CursorOptions = {}): () => void {
       case 'user-joined': {
         if (msg.userId === myUserId) break
         getOrCreateCursor(msg.userId, msg.color)
+        onUserJoin?.()
         break
       }
       case 'user-left': {
         removeCursor(msg.userId)
+        onUserLeave?.()
         break
       }
     }
@@ -133,10 +140,12 @@ export function initCursors(options: CursorOptions = {}): () => void {
 
     socket.onopen = () => {
       attempt = 0
+      onConnect?.()
     }
 
-    socket.onclose = () => {
+    socket.onclose = (event) => {
       socket = null
+      onDisconnect?.(event.code, event.reason)
       if (destroyed) return
       removeAllCursors()
       const delay = Math.min(1000 * 2 ** attempt, 30_000)
@@ -145,7 +154,8 @@ export function initCursors(options: CursorOptions = {}): () => void {
     }
 
     socket.onerror = (err) => {
-      console.warn('MultiCursor: WebSocket error', err)
+      onError?.(err)
+      console.warn('MultiMouse: WebSocket error', err)
     }
 
     socket.onmessage = (event) => {
@@ -153,7 +163,7 @@ export function initCursors(options: CursorOptions = {}): () => void {
       try {
         msg = JSON.parse(event.data as string)
       } catch {
-        console.warn('MultiCursor: received malformed message, ignoring')
+        console.warn('MultiMouse: received malformed message, ignoring')
         return
       }
       handleMessage(msg)

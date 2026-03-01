@@ -2,7 +2,7 @@ import { createServer, type IncomingMessage } from 'node:http'
 import { WebSocketServer, type WebSocket } from 'ws'
 import { randomUUID } from 'node:crypto'
 import type {
-  MultiCursorSocket,
+  MultiMouseSocket,
   UserState,
   CursorMoveMessage,
   ServerOptions,
@@ -40,16 +40,16 @@ function validateCursorMove(data: unknown): data is CursorMoveMessage {
   )
 }
 
-export function createMultiCursorServer(options: ServerOptions = {}) {
+export function createMultiMouseServer(options: ServerOptions = {}) {
   const { port = 3001, allowedOrigins } = options
 
-  const rooms = new Map<string, Map<string, MultiCursorSocket>>()
+  const rooms = new Map<string, Map<string, MultiMouseSocket>>()
   const userStates = new Map<string, UserState>()
   let colorIndex = 0
 
   const httpServer = createServer((_req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' })
-    res.end('multicursor server ok')
+    res.end('multi-mouse server ok')
   })
 
   const wss = new WebSocketServer({
@@ -67,7 +67,7 @@ export function createMultiCursorServer(options: ServerOptions = {}) {
     return hashColor(randomUUID())
   }
 
-  function getRoom(roomId: string): Map<string, MultiCursorSocket> {
+  function getRoom(roomId: string): Map<string, MultiMouseSocket> {
     let room = rooms.get(roomId)
     if (!room) {
       room = new Map()
@@ -88,7 +88,7 @@ export function createMultiCursorServer(options: ServerOptions = {}) {
     }
   }
 
-  function removeUserFromRoom(socket: MultiCursorSocket) {
+  function removeUserFromRoom(socket: MultiMouseSocket) {
     const { roomId, userId } = socket.meta
     const room = rooms.get(roomId)
     if (!room) return
@@ -101,13 +101,13 @@ export function createMultiCursorServer(options: ServerOptions = {}) {
     }
   }
 
-  function broadcastUserLeft(socket: MultiCursorSocket) {
+  function broadcastUserLeft(socket: MultiMouseSocket) {
     const { roomId, userId } = socket.meta
     broadcastToRoom(roomId, { type: 'user-left', userId })
   }
 
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
-    const socket = ws as MultiCursorSocket
+    const socket = ws as MultiMouseSocket
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`)
     const roomId = url.searchParams.get('room') || 'default'
     const userId = randomUUID()
@@ -191,13 +191,13 @@ export function createMultiCursorServer(options: ServerOptions = {}) {
     })
 
     socket.on('error', (err) => {
-      console.warn('MultiCursor: socket error', err.message)
+      console.warn('MultiMouse: socket error', err.message)
     })
   })
 
   const heartbeatInterval = setInterval(() => {
     wss.clients.forEach((ws) => {
-      const socket = ws as MultiCursorSocket
+      const socket = ws as MultiMouseSocket
       if (!socket.meta?.isAlive) {
         socket.terminate()
         return
@@ -208,7 +208,7 @@ export function createMultiCursorServer(options: ServerOptions = {}) {
   }, HEARTBEAT_INTERVAL)
 
   function shutdown() {
-    console.log('MultiCursor: shutting down...')
+    console.log('MultiMouse: shutting down...')
     clearInterval(heartbeatInterval)
     wss.clients.forEach((ws) => ws.close(1001, 'Server shutting down'))
     wss.close(() => {
@@ -224,7 +224,7 @@ export function createMultiCursorServer(options: ServerOptions = {}) {
   function start(): Promise<void> {
     return new Promise((resolve) => {
       httpServer.listen(port, () => {
-        console.log(`MultiCursor server listening on ws://localhost:${port}`)
+        console.log(`MultiMouse server listening on ws://localhost:${port}`)
         resolve()
       })
     })

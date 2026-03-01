@@ -1,0 +1,32 @@
+---
+description: Prefer PNPM over npm for package management
+alwaysApply: true
+---
+
+# Prefer PNPM
+
+For this workspace, we prefer **PNPM** over npm for all package management tasks.
+
+## When to Use PNPM
+
+- Installing dependencies: `pnpm install` (not `npm install`)
+- Adding packages: `pnpm add <package>` (not `npm install <package>`)
+- Running scripts: `pnpm run <script>` or `pnpm <script>` (not `npm run <script>`)
+- Creating documentation or examples: reference PNPM commands
+- Suggesting commands in chat: use PNPM equivalents
+
+## Examples
+
+```bash
+# ✅ GOOD
+pnpm install
+pnpm add -D typescript
+pnpm run build
+pnpm exec vitest
+
+# ❌ AVOID
+npm install
+npm install --save-dev typescript
+npm run build
+npx vitest
+```
